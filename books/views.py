@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render
 from datetime import datetime
 
@@ -16,10 +17,16 @@ def books_by_date_view(request, pub_date):
     template = 'books/books_by_date.html'
 
     # Преобразуем строку даты в объект date
-    current_date = datetime.strptime(pub_date, '%Y-%m-%d').date()
+    try:
+        # Проверяем корректность формата даты
+        current_date = datetime.strptime(pub_date, '%Y-%m-%d').date()
+    except ValueError:
+        raise Http404("Некорректный формат даты")
 
     # Получаем книги для указанной даты
     books = Book.objects.filter(pub_date=current_date)
+    if not books.exists():
+        raise Http404("Нет книг за указанную дату")
 
     # Получаем предыдущую и следующую даты
     prev_date = Book.objects.filter(pub_date__lt=current_date).order_by('-pub_date').values('pub_date').first()
