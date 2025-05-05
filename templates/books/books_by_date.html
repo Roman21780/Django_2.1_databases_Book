@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Книги за {{ current_date|date:'Y-m-d' }}</title>
+</head>
+<body>
+    <h1>Книги за {{ current_date|date:'Y-m-d' }}</h1>
+    <ul>
+        {% for book in books %}
+            <li>{{ book.name }} - {{ book.author }}</li>
+        {% empty %}
+            <li>Нет книг за эту дату</li>
+        {% endfor %}
+    </ul>
+
+    <div>
+        {% if prev_date %}
+            <a href="{% url 'books_by_date' prev_date|date:'Y-m-d' %}">
+                ← Предыдущая дата ({{ prev_date|date:'Y-m-d' }})
+            </a>
+        {% endif %}
+
+        {% if next_date %}
+            <a href="{% url 'books_by_date' next_date|date:'Y-m-d' %}">
+                Следующая дата ({{ next_date|date:'Y-m-d' }}) →
+            </a>
+        {% endif %}
+    </div>
+
+    <p><a href="{% url 'books' %}">Вернуться ко всем книгам</a></p>
+</body>
+</html>
